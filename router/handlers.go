@@ -13,8 +13,12 @@ func (s *Server) healthCheck(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
 
-func (s *Server) getPosts(w http.ResponseWriter, r *http.Request) {
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
 
+func (s *Server) getPosts(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	postType := chi.URLParam(r, "postType")
 	posts := []Post{}
 
