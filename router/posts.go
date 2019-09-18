@@ -41,19 +41,23 @@ func (s *Server) GetAllPostsChan(postType string) <-chan Post {
 		for _, item := range response.Data.Items {
 			datePublished := time.Time{}
 			dateScheduled := time.Time{}
+			postOwner := ""
+
 			if postType == "suggests" {
 				datePublished = time.Unix(int64(item.Date), 0)
 				dateScheduled = time.Unix(int64(0), 0)
+				postOwner = fmt.Sprintf("https://vk.com/id%d", item.FromID)
 			}
 
 			if postType == "postponed" {
 				dateScheduled = time.Unix(int64(item.Date), 0)
+				postOwner = fmt.Sprintf("https://vk.com/id%d", -item.FromID)
 			}
 
 			post := Post{
 				DatePublished: datePublished,
 				DateScheduled: dateScheduled,
-				PostOwner:     fmt.Sprintf("https://vk.com/id%d", item.FromID),
+				PostOwner:     postOwner,
 				Text:          item.Text,
 			}
 
