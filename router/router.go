@@ -1,8 +1,12 @@
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/Kutabe/vk"
@@ -48,6 +52,24 @@ func InitServer() (*Server, error) {
 	return s, err
 }
 
+func FileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit URL parameters.")
+	}
+
+	fs := http.StripPrefix(path, http.FileServer(root))
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}))
+}
+
 func (s *Server) Serve() error {
 	r := chi.NewRouter()
 
@@ -59,6 +81,13 @@ func (s *Server) Serve() error {
 	r.Use(middleware.Timeout(15 * time.Second))
 
 	r.Get("/health", s.healthCheck)
+
+	workDir, _ := os.Getwd()
+	fmt.Println("workDir ", workDir)
+	filesDir := filepath.Join(workDir, "static")
+	FileServer(r, "/", http.Dir(filesDir))
+	// r.Handle("/", http.StripPrefix("/", http.FileServer(http.Dir("static"))))
+	// r.NotFoundHandler = http.StripPrefix("/", http.FileServer(http.Dir("static/404.html")))
 
 	r.Route("/api/v1.0", func(r chi.Router) {
 		// can be "suggests" "postponed" "all"
