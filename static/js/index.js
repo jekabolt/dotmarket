@@ -110,7 +110,7 @@ function loadSuggests() {
         }
     };
 
-    xhr.open('GET', 'http://192.168.100.49:7005/api/v1.0/suggests');
+    xhr.open('GET', 'http://157.245.84.45/api/v1.0/suggests');
     xhr.send();
     // }
 }
@@ -198,7 +198,7 @@ function loadScheduled() {
         }
     };
 
-    xhr.open('GET', 'http://192.168.100.49:7005/api/v1.0/postponed');
+    xhr.open('GET', 'http://157.245.84.45/api/v1.0/postponed');
     xhr.send();
     // }
 }

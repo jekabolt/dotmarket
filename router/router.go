@@ -17,8 +17,8 @@ import (
 
 type Server struct {
 	Port     string `env:"SERVER_PORT" envDefault:"7005"`
-	Login    string `env:"VK_LOGIN" envDefault:"jekabolt@gmail.ru"`
-	Password string `env:"VK_PASSWORD" envDefault:"test"`
+	Login    string `env:"VK_LOGIN" envDefault:"jekabolt@mail.ru"`
+	Password string `env:"VK_PASSWORD" envDefault:"tcpdump1"`
 	GroupID  string `env:"VK_GROUP_ID" envDefault:"-170017193"`
 	CertDir  string `env:"CERT_DIR" envDefault:""`
 	User     *vk.AuthResponse
